@@ -1,7 +1,23 @@
 var test = require('tape');
-var equal = require('../');
+var deepEqual = require('deep-eql');
 var isArguments = require('../lib/is_arguments.js');
 var objectKeys = require('../lib/keys.js');
+
+function isPrimitive(value) {
+    return value === null || typeof value !== 'object';
+}
+
+function loose(a, b) {
+    return isPrimitive(a) && isPrimitive(b) ? a == b : null;
+}
+
+function equal(a, b, options) {
+    if (options && options.strict === true) {
+        return deepEqual(a, b);
+    } else {
+        return deepEqual(a, b, { comparator: loose });
+    }
+}
 
 test('equal', function (t) {
     t.ok(equal(
